@@ -16,17 +16,13 @@ const createTask = async (req, res) => {
       user: userId,
     });
 
-    await task.save();
+    await Promise.all([task.save(), user.tasks.push(task._id), user.save()]);
 
-    user.tasks.push(task._id);
-    user.save();
     res.status(201).json({ message: "Task added successfully", task });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
-
-
 
 module.exports = {
   createTask,
